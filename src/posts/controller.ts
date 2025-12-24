@@ -11,13 +11,13 @@ export async function createPostController(req: Request, res: Response)
 
         if (!title)
         {
-            res.status(400).json({ message: "Please provide Title" });
+            return res.status(400).json({ message: "Please provide Title" });
         } else if (!image_url)
         {
-            res.status(400).json({ message: "Please provide Image Url" });
+            return res.status(400).json({ message: "Please provide Image Url" });
         } else if (!content)
         {
-            res.status(400).json({ message: "Please provide Content" });
+            return res.status(400).json({ message: "Please provide Content" });
         }
 
         const id = uuidv4();
@@ -29,16 +29,16 @@ export async function createPostController(req: Request, res: Response)
             [id, title, image_url, content, created_at, updated_at]
         );
 
-        res.status(201).json({ message: id + " Created"});
+        return res.status(201).json({ message: id + " Created"});
 
     } catch (err) {
         if (err instanceof DatabaseError)
         {
-            res.status(500).json({ message: err.message });
+            return res.status(500).json({ message: err.message });
         }
         if (err instanceof Error)
         {
-            res.status(400).json({ message: err.message });
+            return res.status(400).json({ message: err.message });
         }
     }
 }
@@ -50,7 +50,7 @@ export async function deletePostController(req: Request, res: Response)
 
         if (!id)
         {
-            res.status(200).json({ message: "Please send a valid ID"})
+            return res.status(200).json({ message: "Please send a valid ID"})
         }
 
         const db_response = await pool.query(
@@ -60,20 +60,20 @@ export async function deletePostController(req: Request, res: Response)
 
         if (db_response.rowCount === 0)
         {
-            res.status(404).json({ message: id + " No Such Object Found" })
+            return res.status(404).json({ message: id + " No Such Object Found" })
         }
 
-        res.status(200).json({ message : id + " Deleted"})
+        return res.status(200).json({ message : id + " Deleted"})
     
     } catch (err)
     {
         if (err instanceof DatabaseError)
         {
-            res.status(500).json({ message: err.message })
+            return res.status(500).json({ message: err.message })
         }
         if (err instanceof Error)
         {
-            res.status(400).json({ message: err.message })
+            return res.status(400).json({ message: err.message })
         }
     }
 }
@@ -85,19 +85,19 @@ export async function updatePostController(req: Request, res: Response)
 
         if (!id)
         {
-            res.status(400).json({ message: "Please provide a valid ID" });
+            return res.status(400).json({ message: "Please provide a valid ID" });
         } 
         if (!title)
         {
-            res.status(400).json({ message: "Please provide a valid title" });
+            return res.status(400).json({ message: "Please provide a valid title" });
         }
         if (!image_url)
         {
-            res.status(400).json({ message: "Please provide a valid Image Url"});
+            return res.status(400).json({ message: "Please provide a valid Image Url"});
         }
         if (!content)
         {
-            res.status(400).json({ message: "Please provide a valid content"})
+            return res.status(400).json({ message: "Please provide a valid content"})
         }
 
         const updated_at = new Date();
@@ -107,17 +107,17 @@ export async function updatePostController(req: Request, res: Response)
             [id, title, image_url, content, updated_at]
         )
 
-        res.status(200).json({ message: id + " Updated"})
+        return res.status(200).json({ message: id + " Updated"})
 
     } catch (err)
     {
         if (err instanceof DatabaseError)
         {
-            res.status(400).json({ message: err.message})
+            return res.status(400).json({ message: err.message})
         } 
         if (err instanceof Error)
         {
-            res.status(400).json({ message: err.message })
+            return res.status(400).json({ message: err.message })
         }
     }
 }
@@ -132,7 +132,7 @@ export async function getPostController(req: Request, res: Response)
             const db_response = await pool.query(
                 "SELECT * FROM posts",
             )
-            res.status(200).json(db_response.rows)
+            return res.status(200).json(db_response.rows)
         }
 
         if (id)
@@ -141,7 +141,7 @@ export async function getPostController(req: Request, res: Response)
                 "SELECT * FROM posts WHERE id=$1",
                 [id]
             )
-            res.status(200).json(db_response.rows)
+            return res.status(200).json(db_response.rows)
         }
 
         if (title)
@@ -150,17 +150,17 @@ export async function getPostController(req: Request, res: Response)
                 "SELECT * FROM posts WHERE title=$1", 
                 [title]
             )
-            res.status(200).json(db_response.rows)
+            return res.status(200).json(db_response.rows)
         }
     } catch (err)
     {
         if (err instanceof DatabaseError)
         {
-            res.status(500).json({ message : err.message });
+            return res.status(500).json({ message : err.message });
         }
         if (err instanceof Error)
         {
-            res.status(400).json({ message: err.message });
+            return res.status(400).json({ message: err.message });
         }
     }
 
